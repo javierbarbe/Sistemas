@@ -1,0 +1,87 @@
+servicio para crear un punto de restauiracion de sistema (ocupa mucho espacio en disco)
+(instantanea tomada en cierto momento de todo el sistema)
+para hacer puntos de restauracion tiene que estar habilitado el servicio
+VSS <--- volumen Shadow Copy Service 
+si abres el explrador de archivos 
+boton derecho propiedads de Equipo
+panel de control?
+conf acanxzada de sistema 
+proteccion de sistema
+configurar// habilitar*1
+(get-service -name vss)== > powershell
+
+start-service -name vss
+cuanto mas espacio mas puntos de restauracion
+los puntos se machacan en caso de no caber (se cepilla el mas antiguo)
+si caben porque le has dado tamaño suficiente de memoria para albergar 
+mas de un punto de restauracion, conviven.
+
+una vez que lo habilitas ( le das a crear)*1
+restaurar sistema te da una lista de los puntos de restauracion que hay creados
+
+si estan habilitadas , windows suele hacer un punto de restauracion :
+	- cuando instala un paquete de actualizaciones criticas
+	- instalacion de algun driver critico para el sistema
+
+siempre vas a poder volver a un punto de restauracion hecho ( incluso
+desde la consola de recuperacion en el arranque) 
+
+graadicamente
+panel de control--> sistema y seguridad---> sistema---> configuracion avanzada del sistma
+PESTAÑA  "proteccion del sistema"
+
+boton => configuar >> habilita ptos de restauracion 
+boton --> crear >> crea punto restauracion
+boton --> restaurar Sistema >>> restauras sistema desde un punto de restauracion (te muestra la lista de pts que hay>)
+
+DESDE PWSHELL
+1º para habilitar los pts de restauracion primero hay que comprobar que el servicio "vss" esta "running"
+
+	Enable-ComputerRestore -drive _unidad_
+ej://
+ 	Enable-ComputerRestore -Drive c:
+
+2º si quiero mostrar la lista de pts de restauracion: 
+	 get-computerRestorePoint
+get-command  get-computerRestorePoint -examples
+
+ si queiro saber alguno en concreto
+		get-computerrestorePoint -restorePoint _nº_
+ej://
+		get-computerRestorePoint -restorepoint 1
+
+Para restaurar el sistema desde un punto de recuperacion
+ 
+		restore-computer -restorePoint _nº_
+
+4º para crear un  chekpoint
+ get-help chekpoint-computer -examples
+
+checkpoint-computer -description "..descripcion" 
+			-restorePointType _tipo_ (instalacion software, desinstalacion , cambio en la configuracion, operacion cancelada...)
+
+checkpoint-computer -description "tercero" -RestorePointType _(instalacion software, desinstalacion , cambio en la configuracion, operacion cancelada...)_
+
+HKLM \SOFTWARE\MICROSOFT\WINDOWSNT\CURRENTVERSION\SYSTEMRESTORE --SystemRestorePointCreationFrequency
+
+panel de control 
+VAS alli 
+nuevo tipo DWORD 32 creas un Nuevo 
+le pegas el nombre SystemRestorePointCreationFrequency
+0x00000001 (1 minuto) 
+
+-NO hay ningun comando powershell para borrar los puntos de restauracion, 
+ni siquiera manejando WMI... hay que rercurrir a un comando del CMD    
+(simbolo del sistema antiguo) 
+
+	vssadmin
+dir vss*
+vssadmin.exe <---  comando del sistema alojado en c:\windows\system32
+vss admin list shadows
+
+para borrar 
+vssadmin delete shadows get-help  (te chiva windows todo lo que necesitas)
+necesitas el id del shadow que te quieres ventilar
+vssadmin list shadows
+
+
