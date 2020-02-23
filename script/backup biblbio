@@ -1,0 +1,41 @@
+:<<EOF
+	pedir el nombre del directorio a hacer backup
+	(comprobar que existe, sino error y salir)
+	TIPO BACKUP
+	--------
+	1.Total ==> backuptotal-nombredir-dd-mm-aaaa-jj-mm-tar.gz
+	2.Incremental ==>backupIncremental -Nº-nombreDir-dd-mm-aaaa-hh-mm.tar.gz
+	3.Salir
+
+hay que comprobar que si intentas hacer un backup incrfemental de un directorio
+exxxiste ya un backup del mismo, sino mensjae de erro indicandoselo
+EOF
+opcion=0
+while test $opcion -ne 3
+do
+echo "TIPO BACKUP
+	--------
+	1.Total ==> backuptotal-nombredir-dd-mm-aaaa-jj-mm-tar.gz
+	2.Incremental ==>backupIncremental -Nº-nombreDir-dd-mm-aaaa-hh-mm.tar.gz
+	3.Salir"
+read -p "opcion" opcion
+case $opcion in
+	1|2) read -p "Introduce directorio a hacer backup" dire
+	    fecha=`date +%d-%m-%Y %H\:%M`
+	  nombre=backuptotal-$dire-$fecha
+	     test -d "$dire" || { echo " no existe ..." ; exit 0;}
+		if test $opcion -eq 1
+		then  #backuptotal
+		
+	tar -c -z -v -f /tmp/$nombre.tar.gz $dire
+		else
+	test -f $nombre.tar.gz || {echo "no hay backupprevio" ;exit 0;}
+			#backupincremental
+	nombrein=backupIncremental-numero-$dire
+		tar -v -g /tmp/$nombre.tar.gz -f /tmp/$nombre.tar.gz /home/alumnot/Imágenes
+
+	;;
+	3) exit 0
+	;;
+esac
+done
