@@ -1,0 +1,15 @@
+[Unit]
+Description=Mi servicio
+After=network.target
+StartLimitIntervalSec=1
+
+[Service]
+EnviromentFile=-/home/alumnot/Escritorio/script/servicio.sh
+Type=simple
+Restart=always
+RestartSec=3
+User=alumnot
+ExecStart=/bin/bash /home/alumnot/Escritorio/script/servicio.sh
+
+[Install]
+WantedBy=multi-user.target
