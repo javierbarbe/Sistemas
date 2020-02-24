@@ -1,0 +1,21 @@
+:<<EOF
+
+	hay que comptrobar si eres root antes de ejecutarlo
+	(ver variables de entronos UID o USERNAME ) Si no 
+	eres root mostrar mensaje de error
+	Te tiene que pedir el nombre de una cuenta y te debe mostrar
+
+		-directorio
+		-uid
+		-gid
+		-shell
+		-hashpass
+EOF
+
+	uid=`cat /etc/passwd | grep -e "root" | cut -d ":" -f 3`
+	whoai=`whoami`
+	echo $whoai
+	if test $whoai = root
+	then echo "soy root"
+	else echo "soy gay"
+	fi 
