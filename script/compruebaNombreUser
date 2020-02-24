@@ -1,0 +1,30 @@
+: <<EOF
+
+Script que te pida el nombre de un usuario.*comprobar que existe.* TIenes que mostrar los procesos de ese usuario.
+Estas opciones:
+	- pid
+	- ppid
+	- prioridad
+	- bondad
+	- uso de memoria
+	- uso de cpu
+	- tiempo de ejecucion
+	- comando
+
+EOF
+
+#!/bin/bash
+cat  /etc/passwd | cut -d ":" -f 1
+read -p "dime un nombre de usuario: "  nombreuser
+ 
+#existe=
+if  test `cat /etc/passwd | grep -e "^$nombreuser"` 
+#if  grep -qi "$nombreuser"  /etc/passwd
+then 
+	echo "el usuario existe" 
+else
+	echo "no existe ese usario"
+	exit 0;
+fi
+
+ps -u "$nombreuser" -o pid,ppid,ni,pri,pcpu,pmem,cmd
