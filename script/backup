@@ -20,17 +20,28 @@ echo "TIPO BACKUP
 	3.Salir"
 read -p "opcion" opcion
 case $opcion in
-	1|2) read -p "Introduce directorio a hacer backup" dire
+	1|2) read -p "Introduce directorio a hacer backup: " dire
+		ultimodir=`echo $dire | awk 'BEGIN {FS="/"};{print $NF}'`
+		echo "$ultimodir"
+	    fecha=`date +%d-%m-%Y-%H-%M`
+	  nombre=backuptotal #$dire$fecha
 	     test -d "$dire" || { echo " no existe ..." ; exit 0;}
 		if test $opcion -eq 1
-		then 
-			#backuptotal
-			tar -c -v -f /tmp/pruebaBackup.tar.gz /home/alumnot/Imágenes
-		else
-			test -f pruebaBackup.tar.gz
-			#backupincremental
-			tar  -v -g /tmp/pruebaBackup.tar.gz -f /tmp/backupincremental.tar.gz /home/alumnot/Imágenes
-
+		then  #backuptotal
+			tar -c -z -v -f /tmp/$nombre-$ultimodir`date +%d-%m-%Y-%H-%M`.tar.gz $dire
+		else #opc =2
+		cd /tmp/		
+		ls -S *.gz
+		read -p "dime de que backup quieres hacer incremento: " incremental
+		test -f /tmp/$incremental.tar.gz || { echo "no hay backup previo" ;exit 0;}
+			#backup incremental
+	#test -f /tmp/
+	nombrein=backupIncremental-numero
+	#for((i =1 ; i< 10;i++))
+	tar -v -z -c -g /tmp/$incremental.tar.gz -f /tmp/$nombrein.tar.gz $dire 
+	fi
 	;;
 	3) exit 0
 	;;
+esac
+done
