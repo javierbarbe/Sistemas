@@ -27,4 +27,4 @@ else
 	exit 0;
 fi
 
-ps -u "$nombreuser" -o pid,ppid,ni,pri,pcpu,pmem,cmd
+ps -u "$nombreuser" -o pid,ppid,ni,pri,pcpu,pmem,cmd,time,vsz (tamaño de memoria virtual), rss(tamaño memoria real)
