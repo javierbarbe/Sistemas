@@ -1,3 +1,6 @@
+# plantilla para configurar las reglas de un servicio
+# tiene que estar el archivo con estas reglas miarchivo.service en /lib/systemd/system
+
 [Unit]
 Description=Mi servicio
 After=network.target
@@ -9,7 +12,7 @@ Type=simple
 Restart=always
 RestartSec=3
 User=alumnot
-ExecStart=/bin/bash /home/alumnot/Escritorio/script/servicio.sh
+ExecStart=/bin/bash /home/alumnot/Escritorio/script/servicio.sh  # OBLIGATORIA
 
 [Install]
 WantedBy=multi-user.target
