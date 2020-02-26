@@ -1,0 +1,2 @@
+while read f ; do echo limea que lees $f; dfone 
+while read f; do echo "linea que estamos leyendo $f ; done  < /etc/passwd
