@@ -1,0 +1,35 @@
+function borrarEntrada(){
+	entradas=( `arp -ne | tr -s " " | cut -d " " -f 1` )
+	numentradas=${#entradas[*]} # aqui me da dos elementos en el array ... cuando solo tengo uno en mi maquina virtual... WTF... de hecho el segundo esta vacio... y si le elimino utilizando
+#la opcion 2 ... me pide nombre de anfitrion... la cosa es que no deberia salir... XD
+	echo -e $numentradas
+	for ((i=0; i<numentradas;i++))
+		do 
+	            echo -e "Direccion $((i+1)) ...... ${entradas[i+1]}"
+		done
+	read -p "Cual deseas eliminar?" entradaborrable
+	arp -d ${entradas[entradaborrable]} && echo -e  "eliminada" || echo -e "no hay esa opcion"
+sleep 3s
+
+}
+function añadirEntradaStatica(){
+read -p "Introduce una iP valida" ip
+salida=1
+ while test $salida -ne 0 
+ do
+	 if  echo $ip | grep  '^\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}' # la ip tiene que ser la que 
+								 # me marca el comando arp -ne... 
+						#si no me da un error de direccion de hardware 							#invalida
+		then 
+		echo "cumple el patron"
+			salida=0
+		else 
+			echo "No has introducido una ip valida" 
+			salida=1
+	fi
+done
+read -p "introduce ahora el valor que quieras ponerle a tu IP de la MAC" MAC
+arp -s $ip $MAC && echo "Hecho!! "  
+sleep 8s
+
+}
