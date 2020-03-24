@@ -1,0 +1,25 @@
+function buscarMAC(){
+salida=false
+	
+	
+	 while [$salida -ne true] ;
+ do
+
+	read -p "Introduce la ip de la Mac que quieras saber"  miip
+#	if test `$miip |grep '[0-9]{3}\.[0-9]{3}'`
+#	[[ $miip =~ '[0-9]{3}\.[0-9]{3}' ]] 
+	 if  echo $miip | grep  '^\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}' 
+		then 
+			$salida=true
+		else 
+			echo "No has introducido una ip valida" 
+			
+	fi
+
+	 done
+
+	arp -ne | grep $miip | tr -s " " | cut -d " " -f 3
+	sleep 15s
+
+
+}
