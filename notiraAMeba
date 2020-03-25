@@ -17,3 +17,4 @@ no hay esa opcion
 
 
 
+ip neigh add 192.168.1.100 lladdr 00:5v:54:33:v8:02 dev eth0 nud perm
