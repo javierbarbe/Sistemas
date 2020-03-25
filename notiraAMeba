@@ -1,0 +1,19 @@
+ MANEJO CACHE ARP LOCAL
+        1. Buscar la cache arp del equipo
+        2. Buscar una mac de un equipo dentro de la cache ARP<-- tiene que pedir$
+        3. Borrar una entrada de la cache 
+        4. Añadir una entrada estatica a la cache
+	5. Salir
+
+  
+Opcion:  3
+2
+Direccion 1 ...... 192.168.1.1
+Direccion 2 ...... 
+
+Cual deseas eliminar?2
+arp: se requiere un nombre de anfitrión
+no hay esa opcion
+
+
+
