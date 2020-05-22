@@ -1,0 +1,90 @@
+function ip(){
+salida=1
+	while test $salida -ne 0
+      do
+	read -p "Dime que IP quieres poner " miip
+
+	if echo $miip | grep -e '^\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}' 
+	then 
+		echo -e "patron es correcto" 
+		salida=0
+	else
+		echo -e "ese patron no cumple las condiciones "
+		salida=1
+	fi
+     done
+}
+#----------------------------------------------------
+function creaDirectorio(){
+
+dir=1
+
+while [ $dir -eq 1 ]
+do
+	read -p "nombre directorio WEB de contenidos" directorio
+	if [[ -n "$directorio" ]] 
+	then
+		echo "muy bien con nombre... como los rios :P" 
+		dir=0
+	fi
+
+done
+
+sudo mkdir -p /var/www/$directorio
+sudo chown www-data:www-data /var/www/$directorio
+read -p "Quieres una zona privada?? xxx? [s/n] "  respPriv
+if [[ "$respPriv" ==  "s" ]] 
+	then 
+	sudo mkdir -p /var/www/$directorio/PRIVATE
+fi
+creaBD
+}
+#----------------------------------------
+function creaBD(){
+sudo apt install sqlite3 sqlite3-doc
+acabar=1
+contador=1
+while [ $acabar -ne 0 ]
+do
+	echo "usuario  $contador: "
+	read usuar
+	if [[ "$usuar" == "FIN" ]]
+	then
+	acabar=0
+	break
+	((contador=contador+1))
+	read -p "password: " pass
+done
+
+}
+
+# --------------------------
+echo -e " Menu de Configuracion Servidor Apache"
+# instalando apache
+sudo apt install -s apache2 
+ip
+echo $miip
+read -p "Dime puerto por el que quieres que escuche " puertoDado
+if [[ -z "$puertoDado" ]]
+then
+	echo "Has metido un valor nulo se le asignara el valor 80 por defecto"
+	puertoDado=80
+
+fi 
+nomb=1
+
+while [ $nomb -eq 1 ]
+do
+read -p "Nombre de Servidor (obligatorio)" nombre
+if [[ -n "$nombre" ]] 
+then
+	echo "sabes leer los parentesis :P" 
+	nomb=0
+fi
+
+done
+
+creaDirectorio
+
+
+
