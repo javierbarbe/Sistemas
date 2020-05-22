@@ -1,0 +1,144 @@
+function menu(){
+nombres=( `ip addr show |grep -e "\(^[1-9]\)" |awk '{print $2} ' | cut -d ":" -f 1
+ ` )
+
+echo -e "Tarjetas 
+------------- "
+for (( i=0; $i< ${#nombres[*]} ; i++))
+do
+	nombre=${nombres[i]}
+	if [ $nombre != "lo" ]
+	then
+		echo $i "." $nombre
+	fi
+	
+done
+read -p "Selecciona tarjeta:_ " elegida
+menu2
+}
+function pideIp(){
+echo " has elegido ip" 
+salida=1
+	while test $salida -ne 0
+      do
+	read -p "Dime que IP quieres poner " miip
+
+	if echo $miip | grep -e '^\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}' 
+	then 
+		echo -e "patron es correcto" 
+		salida=0
+	else
+		echo -e "ese patron no cumple las condiciones "
+		salida=1
+	fi
+     done
+salir=1
+#while test $salir -ne 2  # no sale del bucle... no se porque  sigo
+read -p "Mascara de red" masc
+echo $salir "valor salir"
+ #  do
+	
+	if [ "$masc" == "8" ] 
+	then
+	salir=2
+	fi
+	if [ "$masc" == "16" ]
+	then
+	salir=2
+	fi
+	if [ "$masc" == "24" ]
+	then
+	salir=2
+	fi
+	if [ "$salir" == "2" ]
+	then
+	echo "mala mascara"
+	fi
+#done
+nombres=( `ip addr show |grep -e "\(^[1-9]\)" |awk '{print $2}' | cut -d ":" -f 1` )
+sudo ip addr add $miip/$masc dev ${nombres[$elegida]} && echo "tarjeta añadida" || echo "problemas"
+
+}
+function enruta(){
+
+read -p " Direccion del router_"  routerMetido
+ preRuter=`ip addr show |grep -e "inet "| awk '/brd/ { print $2}' | cut -d "/" -f 1 | cut -d "." -f 1,2,3`
+router=$preRuter.1
+if [[ "$routerMetido" == "$router" ]]
+	then
+		echo "la direccion de router es correcta"
+	else
+		echo "error en tu direccion router"
+fi
+
+}
+function paquetes(){
+dns=`cat /etc/resolv.conf | grep -v "^#" | awk '{print $2}'`
+#echo $dns " el dns configurado"
+echo "${nombres[$elegida]}"
+
+
+	ip=`ip addr show | grep "inet" |awk '/brd /  {print $2}'| cut -d "/" -f 1 `
+	router=`ip addr show | grep "inet" |awk '/brd /  {print $2}'| cut -d "/" -f 1 | cut -d "." -f 1,2,3`
+ 	routerfinal=$router.1
+
+	 submac=`ip addr show ${nombres[$elegida]}| grep "inet" |awk '/inet /  {print $2}'| cut -d "/" -f 1`
+	ping $ip -i 0.2 -c 4 -s 65467 && ok1=1 || ok1=2
+	if [[ "$ok1" == "2" ]]
+	then
+		echo " tarjeta no responde"
+	else
+		echo $routerfinal " router final"
+		 ping $routerfinal -i 0.2 -c 4 -s 65467 && ok1=1 || ok1=2
+		if [[ "$ok1" == "2" ]]
+		then
+			echo " ROUTER no responde"
+		else 
+		
+		if  [[  -z $dns ]] 
+		then 
+			echo "no hay DNS configurado"
+		else
+		echo " transmitiendo al dns"
+		ping $dns -i 0.2 -c 4 -s 65467  && ok1=1 || ok1=2
+		if [[ "$ok1" == "2" ]]
+		then
+			echo " SAMATAO PACOO ... CAMBIA DE DNS"
+		else 
+			read -p "Nombre de maquina pa pingearla" maq
+			ping $maq  -i 0.2 -c 4 -s 65467  && ok1=1 || ok1=2
+			if [[ "$ok1" == "2" ]]
+			then
+				echo " los niggas del ataud se llevaron esta maqina"
+			fi
+		fi
+		fi
+		fi
+	fi 
+ #&& ping $routerfinal -i 0.2 -c 4 || echo "tarjeta no responde" || echo "han habido perdidas"
+	#fi
+
+
+}
+
+function menu2(){
+opc=3
+while [ $opc -ne 4 ]
+do
+echo "
+	1. CONFIGURAR PARAMETROS CAPA DE RED 
+	2. CONFIGURAR ENRUTAMIENTO
+	3. COMPROBAR TARJETA
+	4. SALIR"
+
+read -p "opcion:_" opc
+case $opc in
+1)pideIp;;
+2)enruta;;
+3)paquetes;;
+esac
+done
+}
+
+
+menu
